@@ -43,6 +43,13 @@ public abstract class ArmyUnit {
         return unitCount;
     }
 
+    public int getAttackCount() {
+        return attackCount;
+    }
+
+    public int getDefenseCount() {
+        return defenseCount;
+    }
     public void setId(int id) {
         this.id = id;
     }
@@ -73,5 +80,13 @@ public abstract class ArmyUnit {
 
     public void setVulnerability(double vulnerability) {
         this.vulnerability = vulnerability;
+    }
+
+    public void setAttackCount(int attackCount) {
+        this.attackCount = attackCount;
+    }
+
+    public void setDefenseCount(int defenseCount) {
+        this.defenseCount = defenseCount;
     }
 }

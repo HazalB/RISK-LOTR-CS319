@@ -7,12 +7,12 @@ public class Player {
     private Faction faction;
     static int playerCount = 0;
 
-    public Player(String name, Faction faction){
-        this.username = name;
+    public Player(String username, String factionName){
+        this.username = username;
         this.id = playerCount++;
         this.treasury = 0;
         this.income = 0;
-        this.faction = faction;
+        this.faction = new Faction(factionName);
     }
 
     public String getUsername(){

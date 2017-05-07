@@ -4,17 +4,16 @@ import java.util.ArrayList;
  * Created by Mirac Vuslat Basaran on 18-Apr-17.
  */
 public class Province {
-    // TODO AddArmy Method
-    // TODO neighboring Provinces
-    private ArrayList<Province> neighboringProvinceList;
+    // TODO Constructors need work
+    private ArrayList<Integer> neighboringProvinceList;
     private Army army;
 
     public Province(){
-        neighboringProvinceList = new ArrayList<Province>();
+        neighboringProvinceList = new ArrayList<Integer>();
         army = null;
     }
 
-    public Province(ArrayList<Province> neighboringProvinceList, Army army){
+    public Province(ArrayList<Integer> neighboringProvinceList, Army army){
         this.neighboringProvinceList = neighboringProvinceList;
         this.army = army;
     }
@@ -23,7 +22,7 @@ public class Province {
         return army;
     }
 
-    public ArrayList<Province> getNeighboringProvinceList() {
+    public ArrayList<Integer> getNeighboringProvinceList() {
         return neighboringProvinceList;
     }
 
@@ -31,7 +30,11 @@ public class Province {
         this.army = army;
     }
 
-    public void setNeighboringProvinceList(ArrayList<Province> neighboringProvinceList) {
+    public void setNeighboringProvinceList(ArrayList<Integer> neighboringProvinceList) {
         this.neighboringProvinceList = neighboringProvinceList;
+    }
+
+    public void addArmyUnit(ArmyUnit unit){
+        army.addArmyUnit(unit);
     }
 }
