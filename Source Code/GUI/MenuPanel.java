@@ -20,7 +20,6 @@ public class MenuPanel extends JPanel {
 	
 	public MenuPanel(JPanel mP, CardLayout cl) {
 		
-		
 		cardLayout=cl;
 		mainPanel=mP;
 		
@@ -52,45 +51,20 @@ public class MenuPanel extends JPanel {
 		button[2].setBounds(185, 401, 252, 63);
 		button[3].setBounds(185, 475, 252, 63);
 		
-		//the images of the buttons set
-		button[0].setIcon(buttonImages[0]);
-		button[1].setIcon(buttonImages[1]);
-		button[2].setIcon(buttonImages[2]);
-		button[3].setIcon(buttonImages[3]);
-		
-		//makes frames of the buttons opac
-		button[0].setFocusPainted(false); 
-		button[0].setOpaque(false);
-		button[0].setContentAreaFilled(false);
-		button[0].setBorderPainted(false);	
-		button[0].setFocusable(false);
-		
-		button[1].setFocusPainted(false); 
-		button[1].setOpaque(false);
-		button[1].setContentAreaFilled(false);
-		button[1].setBorderPainted(false);	
-		button[1].setFocusable(false);
-		
-		button[2].setFocusPainted(false); 
-		button[2].setOpaque(false);
-		button[2].setContentAreaFilled(false);
-		button[2].setBorderPainted(false);	
-		button[2].setFocusable(false);
-		
-		button[3].setFocusPainted(false); 
-		button[3].setOpaque(false);
-		button[3].setContentAreaFilled(false);
-		button[3].setBorderPainted(false);	
-		button[3].setFocusable(false);
-		
 		//button listener created
 		ButtonListener listener = new ButtonListener();
 		
-		//add listener to buttons
-		button[0].addActionListener(listener);
-		button[1].addActionListener(listener);
-		button[2].addActionListener(listener);
-		button[3].addActionListener(listener);
+		//makes frames of the buttons opac and add listener to button and set its icon
+		for(int i=0; i<4; i++){
+			button[i].setIcon(buttonImages[i]);
+			button[i].setFocusPainted(false); 
+			button[i].setOpaque(false);
+			button[i].setContentAreaFilled(false);
+			button[i].setBorderPainted(false);	
+			button[i].setFocusable(false);
+			button[i].addActionListener(listener);
+		}
+		
 		
 		//set the bounds of the panel
 		setBounds(0, 0, 650, 650);
@@ -113,12 +87,13 @@ public class MenuPanel extends JPanel {
 		g.drawImage( background, 0, 0, null); //draw background
 	}
 	
+	public static void main(String[] args){}
 	
 	
 	private class ButtonListener implements ActionListener{
 		public void actionPerformed(ActionEvent event){
 			if(event.getSource()==button[0]){
-				//start game
+				cardLayout.show(mainPanel, "playerNumPanel");
 			}
 			else if(event.getSource()==button[1]){
 				cardLayout.show(mainPanel, "options");
