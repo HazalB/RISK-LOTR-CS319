@@ -13,16 +13,22 @@ public class AddSoldierPanel extends JPanel {
 	private CardLayout cardLayout;
 	private Image background;
 	private JButton swordsman, axeman, spearman, archer, cavalry, wargRiders, mumakil, nazgul;
+	private String soldiertype;
+	private boolean actionPerf;
 	
 	public AddSoldierPanel(JPanel mP, CardLayout cl) {
 		mainPanel=mP;
 		cardLayout=cl;
+		
+		actionPerf=false;
+		soldiertype="";
 		
 		swordsman = new JButton();
 		axeman = new JButton();
 		spearman = new JButton();
 		archer = new JButton();
 		wargRiders = new JButton();
+		cavalry = new JButton();
 		mumakil = new JButton();
 		nazgul = new JButton();
 		
@@ -58,21 +64,56 @@ public class AddSoldierPanel extends JPanel {
 		archer.setBorderPainted(false);	
 		archer.setFocusable(false);
 		
+		cavalry.setIcon(new ImageIcon("images/cavalarybut.png"));
+		cavalry.setBounds(245, 250, 107, 107);
+		cavalry.setFocusPainted(false); 
+		cavalry.setOpaque(false);
+		cavalry.setContentAreaFilled(false);
+		cavalry.setBorderPainted(false);	
+		cavalry.setFocusable(false);
+		
 		wargRiders.setIcon(new ImageIcon("images/warg-ridersbut.png"));
-		wargRiders.setBounds(245, 250, 107, 107);
+		wargRiders.setBounds(40, 365, 107, 107);
 		wargRiders.setFocusPainted(false); 
 		wargRiders.setOpaque(false);
 		wargRiders.setContentAreaFilled(false);
 		wargRiders.setBorderPainted(false);	
 		wargRiders.setFocusable(false);
 		
+		mumakil.setIcon(new ImageIcon("images/mumakilbut.png"));
+		mumakil.setBounds(175, 365, 107, 107);
+		mumakil.setFocusPainted(false); 
+		mumakil.setOpaque(false);
+		mumakil.setContentAreaFilled(false);
+		mumakil.setBorderPainted(false);	
+		mumakil.setFocusable(false);
 		
+		nazgul.setIcon(new ImageIcon("images/nazgulbut.png"));
+		nazgul.setBounds(310, 365, 107, 107);
+		nazgul.setFocusPainted(false); 
+		nazgul.setOpaque(false);
+		nazgul.setContentAreaFilled(false);
+		nazgul.setBorderPainted(false);	
+		nazgul.setFocusable(false);
 		
 		add(swordsman);
 		add(axeman);
 		add(spearman);
 		add(archer);
+		add(cavalry);
 		add(wargRiders);
+		add(mumakil);
+		add(nazgul);
+		
+		SoldierAddListener addSoldList = new SoldierAddListener();
+		swordsman.addActionListener(addSoldList);
+		axeman.addActionListener(addSoldList);
+		spearman.addActionListener(addSoldList);
+		archer.addActionListener(addSoldList);
+		cavalry.addActionListener(addSoldList);
+		wargRiders.addActionListener(addSoldList);
+		mumakil.addActionListener(addSoldList);
+		nazgul.addActionListener(addSoldList);
 		
 		setVisible(true);
 		setLayout(null);
@@ -85,6 +126,51 @@ public class AddSoldierPanel extends JPanel {
 		background = new ImageIcon("images/addsoldierpanel.png").getImage(); //get background icon as image
 		
 		g.drawImage( background, 0, 0, null); //draw background
+	}
+	
+	private class SoldierAddListener implements ActionListener{
+		public void actionPerformed(ActionEvent event){
+			if(event.getSource()==swordsman){
+				soldiertype = "swordsman";
+				actionPerf=true;
+				cardLayout.show(mainPanel, "soldierNumberPanel");
+			}
+			else if(event.getSource()==axeman){
+				soldiertype = "axeman";
+				actionPerf=true;
+				cardLayout.show(mainPanel, "soldierNumberPanel");
+			}
+			else if(event.getSource()==spearman){
+				soldiertype = "spearman";
+				actionPerf=true;
+				cardLayout.show(mainPanel, "soldierNumberPanel");
+			}
+			else if(event.getSource()==archer){
+				soldiertype = "archer";
+				actionPerf=true;
+				cardLayout.show(mainPanel, "soldierNumberPanel");
+			}
+			else if(event.getSource()==cavalry){
+				soldiertype = "cavalry";
+				actionPerf=true;
+				cardLayout.show(mainPanel, "soldierNumberPanel");
+			}
+			else if(event.getSource()==wargRiders){
+				soldiertype = "warg-riders";
+				actionPerf=true;
+				cardLayout.show(mainPanel, "soldierNumberPanel");
+			}
+			else if(event.getSource()==mumakil){
+				soldiertype = "mumakil";
+				actionPerf=true;
+				cardLayout.show(mainPanel, "soldierNumberPanel");
+			}
+			else if(event.getSource()==nazgul){
+				soldiertype = "nazgul";
+				actionPerf=true;
+				cardLayout.show(mainPanel, "soldierNumberPanel");
+			}
+		}
 	}
 
 }

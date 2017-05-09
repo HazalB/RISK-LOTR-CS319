@@ -15,14 +15,9 @@ public class PlayerNumberPanel extends JPanel {
 	private JButton nextBut;
 	private JTextField playerNumField;
 	private int playerNum;
-	private JLabel label;
 	private AddPlayerPanel addPlayerPanel;
 	
 	public PlayerNumberPanel(JPanel mP, CardLayout cl, AddPlayerPanel aP) {
-		
-		label = new JLabel("");
-		add(label);
-		label.setBounds(407, 256, 100, 100);
 		
 		addPlayerPanel=aP;
 		mainPanel = mP;
@@ -67,7 +62,6 @@ public class PlayerNumberPanel extends JPanel {
 	public class PlayerNumListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			playerNum = Integer.parseInt(playerNumField.getText());
-			label.setText(Integer.toString(playerNum));
 			addPlayerPanel.setPlayerNum(playerNum);
 		}
 	}

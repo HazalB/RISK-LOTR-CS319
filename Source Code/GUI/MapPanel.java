@@ -16,6 +16,7 @@ public class MapPanel extends JPanel {
 	private JButton provinceActionButton[];
 	private CardLayout cardLayout;
 	private JPanel mainPanel;
+	private JLabel nameLabel;
 	
 	public MapPanel(JPanel mP, CardLayout cl) {
 		
@@ -24,11 +25,17 @@ public class MapPanel extends JPanel {
 		cardLayout = cl;
 		mainPanel=mP;
 		
+		nameLabel = new JLabel("Hazal");
+		add(nameLabel);
+		nameLabel.setBounds(10, 2, 150, 40);
+		nameLabel.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		nameLabel.setForeground(Color.BLUE);
+		
 		//set all the buttons image visible
 		for(int i=1; i<67; i++){
 			provinceImage[i] = new JLabel();
 			provinceActionButton[i] = new JButton();
-		}		
+		}
 		
 		//locations of all the buttons
 		
@@ -170,7 +177,7 @@ public class MapPanel extends JPanel {
 		provinceImage[57].setIcon(new ImageIcon("images/regions/57military.png"));
 		provinceImage[58].setIcon(new ImageIcon("images/regions/58military.png"));
 		provinceImage[59].setIcon(new ImageIcon("images/regions/59military.png"));
-		provinceImage[60].setIcon(new ImageIcon("images/regions/60pink.png"));
+		provinceImage[60].setIcon(new ImageIcon("images/regions/60military.png"));
 		provinceImage[61].setIcon(new ImageIcon("images/regions/61pink.png"));
 		provinceImage[62].setIcon(new ImageIcon("images/regions/62pink.png"));
 		provinceImage[63].setIcon(new ImageIcon("images/regions/63pink.png"));
@@ -255,6 +262,9 @@ public class MapPanel extends JPanel {
 			if(i!=6)
 				provinceActionButton[i].setVisible(false);
 		}
+		/*for(int i=37; i<44; i++){
+			provinceActionButton[i].setVisible(true);
+		}	*/	
 		
 		setVisible(true);
 		setLayout(null);

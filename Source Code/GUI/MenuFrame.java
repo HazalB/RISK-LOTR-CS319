@@ -60,13 +60,13 @@ public class MenuFrame extends JFrame {
 		helpPanel.setPreferredSize(new Dimension(665, 687));
 		optionsPanel.setPreferredSize(new Dimension(665, 687));
 		
-		//mainPanel.add("gameMainPanel", gameMainPanel);
+		mainPanel.add("gameMainPanel", gameMainPanel);
 		mainPanel.add("menu", menuPanel);
 		mainPanel.add("playerNumPanel", playerNumberPanel);
 		//playerNum=playerNumberPanel.getNumOfPlayer();
 		
 		//addPlayerPanel.setPlayerNum(playerNumberPanel.getNumOfPlayer());
-		mainPanel.add("gameMainPanel", gameMainPanel);
+		//mainPanel.add("gameMainPanel", gameMainPanel);
 		mainPanel.add("addPlayerPanel", addPlayerPanel);
 		mainPanel.add("help", helpPanel);
 		mainPanel.add("options", optionsPanel);

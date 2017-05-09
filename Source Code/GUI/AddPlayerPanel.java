@@ -19,7 +19,6 @@ public class AddPlayerPanel extends JPanel {
 	private int totalPlayerNum, currentFaction;
 	private ButtonGroup bG;
 	private ArrayList<String> nameList, factionList;
-	private JLabel label;
 	
 	
 	public AddPlayerPanel(JPanel mP, CardLayout cl) {
@@ -31,11 +30,6 @@ public class AddPlayerPanel extends JPanel {
 		factionList = new ArrayList<String>();		
 		
 		name = "";
-		
-		label = new JLabel();
-		label.setText(Integer.toString(totalPlayerNum));
-		label.setBounds(400, 300, 100, 100);
-		add(label);
 		
 		mainPanel = mP;
 		cardLayout = cl;
