@@ -1,15 +1,18 @@
+package Manager;
 /**
  * Created by Elena Cina
  * 22 April 2017
  */
+import GameMemory.*;
+public class MobilityPhaseManager extends Manager{
 
-public class MobilityPhaseManager{
+	public MobilityPhaseManager(Game game){
+		super(game);
+	}
 
-	OrderList orderL; //orderList object which will be used to call the addOrder method of this class
-
-	public void addOrder2(Order order)//gets the input from GUI
+	public void addOrder(Order order)//gets the input from GUI
 	{
-		orderL.addOrder(order);
+		game.getOrderList().addOrder(order);
 	}
 }
 
