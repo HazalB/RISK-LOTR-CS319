@@ -5,17 +5,22 @@ package Manager;
  */
 import GameMemory.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainGameManager extends Manager
 {
-	private PersistentDataManager persistentDataManager;
+	private PermanentDataManager persistentDataManager;
 	private DeploymentPhaseManager deploymentPhaseManager;
 	private MobilityPhaseManager mobilityPhaseManager; 
 	private ExecutionPhaseManager executionPhaseManager; 
-	private SoundManager soundManager; 
+	private SoundManager soundManager;
+	private int numPlayers;
+	private ArrayList<Player> players;
 	public MainGameManager() {
 	        super(null);
+	        numPlayers = 0;
+	        players = new ArrayList<Player>();
 	    }
 	Game game = new Game ();
 	
@@ -108,27 +113,29 @@ public class MainGameManager extends Manager
 		game.setNumPlayers(numPlayers);//gets parameter from gui
 		game.setPlayers(players); //from gui
 		game.setCurPhase(1);
-		game.setCurPlayerId(curPlayerId);
-		game.setTurnNo(turnNo);
-		game.setOrderList(orderList);
-		game.setLoserPlayerIds(loserPlayerIds);
-		game.setProvinceList(provinceList);
+		game.setCurPlayerId(0);
+		game.setTurnNo(1);
+		game.setOrderList(new OrderList());
+		game.setLoserPlayerIds(new ArrayList<Integer>());
+		getPermanentGameData();
 	}
 	
 	public void getPermanentGameData()
 	{
-		int income = deploymentDataManager.calculateIncom();
-		vector<vector<string>> unitInfo = persistentDataManager.getArmyUnitInfo();
-		vector<vector<string>> factionInfo = persistentDataManager.getFactionInfo();
-		vector <string> provinceInfo = persistentDataManager.getProvinceInfo();
-		vector<vector<string>> areaInfo	= persistentDataManager.getAreaInfo();
-		
+		try{
+			game.setProvinceList(persistentDataManager.getProvinceInfo());
+		}
+		catch (IOException x){
+			System.exit(0);
+		}
+
+		game.setAreaList(persistentDataManager.getAreaInfo());
 	}
 	
-	public void playSound(){
+	/*public void playSound(){
 		soundManager.playBSound();
 		
-	}
+	}*/
 	
 	public void updateScreen(){
 		//there should be a sreenManager 
