@@ -1,6 +1,7 @@
+package GUI;
 import java.awt.Color;
 import java.awt.Graphics;
-
+import Manager.*;
 import javax.swing.*;
 
 import java.awt.*;
@@ -9,10 +10,14 @@ import java.awt.*;
 public class RightColumnPanel extends JPanel {
 
 	private Image background;
+	private MainGameManager game;
 	/**
 	 * Create the panel.
 	 */
-	public RightColumnPanel() {
+	public RightColumnPanel(MainGameManager mGM) {
+		
+		game = mGM;
+		
 		setVisible(true);
 		setLayout(null);
 		setBackground(Color.black);

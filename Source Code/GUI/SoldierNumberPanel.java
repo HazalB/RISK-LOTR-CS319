@@ -1,5 +1,6 @@
+package GUI;
 import javax.swing.*;
-
+import Manager.*;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -15,10 +16,14 @@ public class SoldierNumberPanel extends JPanel {
 	private JTextField soldierNumberField;
 	private int soldierNum;
 	private JButton nextBut, backBut;
+	private MainGameManager game;
+	private int provinceId;
+	private int soldierType;
 	
-	public SoldierNumberPanel(JPanel mP, CardLayout cl) {
+	public SoldierNumberPanel(JPanel mP, CardLayout cl, MainGameManager mGM) {
 		cardLayout = cl;
 		mainPanel = mP;
+		game = mGM;
 		
 		soldierNum=-1;
 		
@@ -80,6 +85,7 @@ public class SoldierNumberPanel extends JPanel {
 			if(e.getSource()==nextBut){
 				if(soldierNumberField.getText()!="" && soldierNum!=-1){
 					soldierNumberField.setText("");
+					game.addArmyUnit(soldierType, soldierNum, provinceId);
 					cardLayout.show(mainPanel, "activeMapPanel");
 				}
 			}
@@ -87,6 +93,14 @@ public class SoldierNumberPanel extends JPanel {
 				cardLayout.show(mainPanel, "activeMapPanel");
 			}
 		}
+	}
+	
+	public void setProvId(int i){
+		provinceId=i;
+	}
+	
+	public void setSoldierType(int i){
+		soldierType= i;
 	}
 
 }

@@ -1,5 +1,6 @@
+package GUI;
 import javax.swing.*;
-
+import Manager.*;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -13,15 +14,17 @@ public class AddSoldierPanel extends JPanel {
 	private CardLayout cardLayout;
 	private Image background;
 	private JButton swordsman, axeman, spearman, archer, cavalry, wargRiders, mumakil, nazgul;
-	private String soldiertype;
 	private boolean actionPerf;
+	private MainGameManager game;
+	private SoldierNumberPanel soldierNumberPanel;
 	
-	public AddSoldierPanel(JPanel mP, CardLayout cl) {
+	public AddSoldierPanel(JPanel mP, CardLayout cl, MainGameManager mGM, SoldierNumberPanel sNP) {
 		mainPanel=mP;
 		cardLayout=cl;
+		game = mGM;
 		
 		actionPerf=false;
-		soldiertype="";
+		soldierNumberPanel = sNP;
 		
 		swordsman = new JButton();
 		axeman = new JButton();
@@ -131,42 +134,42 @@ public class AddSoldierPanel extends JPanel {
 	private class SoldierAddListener implements ActionListener{
 		public void actionPerformed(ActionEvent event){
 			if(event.getSource()==swordsman){
-				soldiertype = "swordsman";
+				soldierNumberPanel.setSoldierType(6);
 				actionPerf=true;
 				cardLayout.show(mainPanel, "soldierNumberPanel");
 			}
 			else if(event.getSource()==axeman){
-				soldiertype = "axeman";
+				soldierNumberPanel.setSoldierType(1);
 				actionPerf=true;
 				cardLayout.show(mainPanel, "soldierNumberPanel");
 			}
 			else if(event.getSource()==spearman){
-				soldiertype = "spearman";
+				soldierNumberPanel.setSoldierType(5);
 				actionPerf=true;
 				cardLayout.show(mainPanel, "soldierNumberPanel");
 			}
 			else if(event.getSource()==archer){
-				soldiertype = "archer";
+				soldierNumberPanel.setSoldierType(0);
 				actionPerf=true;
 				cardLayout.show(mainPanel, "soldierNumberPanel");
 			}
 			else if(event.getSource()==cavalry){
-				soldiertype = "cavalry";
+				soldierNumberPanel.setSoldierType(2);
 				actionPerf=true;
 				cardLayout.show(mainPanel, "soldierNumberPanel");
 			}
 			else if(event.getSource()==wargRiders){
-				soldiertype = "warg-riders";
+				soldierNumberPanel.setSoldierType(7);
 				actionPerf=true;
 				cardLayout.show(mainPanel, "soldierNumberPanel");
 			}
 			else if(event.getSource()==mumakil){
-				soldiertype = "mumakil";
+				soldierNumberPanel.setSoldierType(3);
 				actionPerf=true;
 				cardLayout.show(mainPanel, "soldierNumberPanel");
 			}
 			else if(event.getSource()==nazgul){
-				soldiertype = "nazgul";
+				soldierNumberPanel.setSoldierType(4);
 				actionPerf=true;
 				cardLayout.show(mainPanel, "soldierNumberPanel");
 			}

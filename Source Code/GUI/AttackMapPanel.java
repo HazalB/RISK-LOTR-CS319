@@ -7,8 +7,7 @@ import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 
-
-public class MapPanel extends JPanel {
+public class AttackMapPanel extends JPanel {
 
 	/**
 	 * Create the panel.
@@ -16,28 +15,25 @@ public class MapPanel extends JPanel {
 	
 	private Image background;
 	private JLabel provinceImage[];
-	public JButton provinceActionButton[];
+	private JButton provinceActionButton[];
+	private ImageIcon provincegreen[], provincegrey[], provincepink[], provinceyellow[], provincemint[];
+	private ImageIcon provincebrown[], provincemilitary[], provinceorange[], provinceblue[];
 	private CardLayout cardLayout;
 	private JPanel mainPanel;
 	private JLabel nameLabel;
-	public ImageIcon provincegreen[], provincegrey[], provincepink[], provinceyellow[], provincemint[];
-	public ImageIcon provincebrown[], provincemilitary[], provinceblue[], provinceorange[];
 	private MainGameManager game;
-	private TransferMapPanel transferMapPanel;
-	private MobilityMapPanel mobilityMapPanel;
-	private CreateSoldierMapPanel createSoldierMapPanel;
+	private int attackFrom, attackTo;
+	private AttackSoldierPanel attackSoldierPanel;
+	private ArrayList<Integer> toGreyBackProv;
 	
-	public MapPanel(JPanel mP, CardLayout cl, MainGameManager mGM, TransferMapPanel tMP,
-			MobilityMapPanel mMP, CreateSoldierMapPanel cSMP) {
-		
-		game = mGM;
+	public AttackMapPanel(JPanel mP, CardLayout cl, MainGameManager mGM, AttackSoldierPanel aSP) {
 		provinceImage = new JLabel[67];
 		provinceActionButton = new JButton[67];
-		cardLayout = cl;
-		mainPanel=mP;
-		transferMapPanel = tMP;
-		mobilityMapPanel = mMP;
-		createSoldierMapPanel = cSMP;
+		
+		attackTo=-1;
+		
+		game = mGM;
+		attackSoldierPanel = aSP;
 		
 		provincegreen = new ImageIcon[67];
 		provincegrey = new ImageIcon[67];
@@ -46,8 +42,8 @@ public class MapPanel extends JPanel {
 		provincemint = new ImageIcon[67];
 		provincebrown = new ImageIcon[67];
 		provincemilitary = new ImageIcon[67];
-		provinceblue = new ImageIcon[67];
 		provinceorange = new ImageIcon[67];
+		provinceblue = new ImageIcon[67];
 		
 		//all of the images for the provinces in here
 		
@@ -520,6 +516,7 @@ public class MapPanel extends JPanel {
 		provincemilitary[65] = new ImageIcon("images/regions/65military.png");
 		provincemilitary[66] = new ImageIcon("images/regions/66military.png");
 		
+
 		//blue
 		provinceblue[1] = new ImageIcon("images/regions/01blue.png");
 		provinceblue[2] = new ImageIcon("images/regions/02blue.png");
@@ -653,6 +650,16 @@ public class MapPanel extends JPanel {
 		provinceorange[64] = new ImageIcon("images/regions/64orange.png");
 		provinceorange[65] = new ImageIcon("images/regions/65orange.png");
 		provinceorange[66] = new ImageIcon("images/regions/66orange.png");
+				
+		
+		cardLayout = cl;
+		mainPanel=mP;
+		
+		nameLabel = new JLabel(game.getName());
+		add(nameLabel);
+		nameLabel.setBounds(10, 2, 150, 40);
+		nameLabel.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		nameLabel.setForeground(Color.WHITE);
 		
 		//set all the buttons image visible
 		for(int i=1; i<67; i++){
@@ -735,43 +742,18 @@ public class MapPanel extends JPanel {
 			}
 		}
 		
+		/*for(int i=1; i<67; i++){
+			if(i!=6){
+				provinceActionButton[i].addActionListener(new ButtonListener());
+			}
+		}*/
 		
 		//set Buttons
-		for(int i=0; i<game.getEmptyProvinces().size(); i++){
-			provinceImage[game.getEmptyProvinces().get(i)].setIcon(provinceorange[game.getEmptyProvinces().get(i)]);
-			transferMapPanel.changeProvinceColor(game.getEmptyProvinces().get(i), "empty");
-			mobilityMapPanel.changeProvinceColor(game.getEmptyProvinces().get(i), "empty");
-			createSoldierMapPanel.changeProvinceColor(game.getEmptyProvinces().get(i), "empty");
-		}
-		
-		for(int i=1; i<67; i++)
-			if(i!=6 && provinceImage[i].getIcon()!=provinceorange[i]){
-				String fact = game.getProvinceFaction(i);
-				transferMapPanel.changeProvinceColor(game.getEmptyProvinces().get(i), fact);
-				mobilityMapPanel.changeProvinceColor(game.getEmptyProvinces().get(i), fact);
-				createSoldierMapPanel.changeProvinceColor(game.getEmptyProvinces().get(i), fact);
-				if(fact == "mordor"){
-					provinceImage[i].setIcon(provincemilitary[i]);
-				}
-				else if(fact == "gondor"){
-					provinceImage[i].setIcon(provincemint[i]);
-				}
-				else if(fact == "rohan"){
-					provinceImage[i].setIcon(provinceblue[i]);
-				}
-				else if(fact == "elves"){
-					provinceImage[i].setIcon(provincegreen[i]);
-				}
-				else if(fact == "dwarves"){
-					provinceImage[i].setIcon(provinceyellow[i]);
-				}
-				else if(fact == "harad"){
-					provinceImage[i].setIcon(provincepink[i]);
-				}
-				else if(fact == "isengard"){
-					provinceImage[i].setIcon(provincebrown[i]);
-				}
+		for(int i=1; i<67; i++){
+			if(i!=6){
+				provinceImage[i].setIcon(provincegrey[i]);
 			}
+		}
 		
 		for(int i=1; i<67; i++){
 			if(i!=6){
@@ -846,15 +828,11 @@ public class MapPanel extends JPanel {
 		provinceActionButton[65].setBounds(360, 600, 15, 15);
 		provinceActionButton[66].setBounds(410, 570, 15, 15);
 		
-		nameLabel = new JLabel(game.getName()); //string al name
-		add(nameLabel);
-		nameLabel.setBounds(10, 2, 150, 40);
-		nameLabel.setFont(new Font("Times New Roman", Font.BOLD, 18));
-		nameLabel.setForeground(Color.WHITE);
-		
 		for(int i=1; i<67; i++){
-			if(i!=6)
+			if(i!=6){
 				provinceActionButton[i].setVisible(false);
+				provinceActionButton[i].addActionListener(new ProvinceActionListener());
+			}
 		}
 		/*for(int i=37; i<44; i++){
 			provinceActionButton[i].setVisible(true);
@@ -875,116 +853,119 @@ public class MapPanel extends JPanel {
 		g.drawImage( background, 0, 0, null); //draw background
 	}
 	
-	
-	public void setRedBoxesVisible(ArrayList<Integer> redboxlist){
-		for(int i=0; i<redboxlist.size(); i++){
-			int index = redboxlist.get(i);
-			provinceActionButton[index].setVisible(true);
-		}
-	}
-	
-	public void setRedBoxesNotVisible(ArrayList<Integer> redboxlist){
-		for(int i=0; i<redboxlist.size(); i++){
-			int index = redboxlist.get(i);
-			provinceActionButton[index].setVisible(false);
-		}
-	}
-	
-	public void setEmptyProvinces(ArrayList<Integer> emptyProvinces){
-		for(int i=0; i<emptyProvinces.size(); i++){
-			int index = emptyProvinces.get(i);
-			provinceImage[index].setIcon(provinceorange[i]);
-		}
-	}
-	
-	public void changeProvinceColor(int provId, String provCol){
-		createSoldierMapPanel.changeProvinceColor(provId, provCol);
-		mobilityMapPanel.changeProvinceColor(provId, provCol);
-		transferMapPanel.changeProvinceColor(provId, provCol);
-		if(provCol == "mordor"){
-			provinceImage[provId].setIcon(provincemilitary[provId]);
-		}
-		else if(provCol == "gondor"){
-			provinceImage[provId].setIcon(provincemint[provId]);
-		}
-		else if(provCol == "rohan"){
-			provinceImage[provId].setIcon(provinceblue[provId]);
-		}
-		else if(provCol == "elves"){
-			provinceImage[provId].setIcon(provincegreen[provId]);
-		}
-		else if(provCol == "dwarves"){
-			provinceImage[provId].setIcon(provinceyellow[provId]);
-		}
-		else if(provCol == "harad"){
-			provinceImage[provId].setIcon(provincepink[provId]);
-		}
-		else if(provCol == "isengard"){
-			provinceImage[provId].setIcon(provincebrown[provId]);
-		}
-		else if(provCol == "empty"){
-			provinceImage[provId].setIcon(provinceorange[provId]);
-		}
-	}
-	
-	public JLabel[] provinceLabels(){
-		JLabel[] provinceLabelsList = new JLabel[67];
-		for(int i=1; i<67; i++){
-			if(i!=6){
-				provinceLabelsList[i] = provinceImage[i];
+	private class ProvinceActionListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			for(int i=1; i<67; i++){
+				if(i!=6){
+					if(e.getSource()==provinceActionButton[i]){
+						attackSoldierPanel.setToId(i);
+						attackTo = i;
+					}
+				}
 			}
 		}
-		return provinceLabelsList;
 	}
 	
-	public Image getMapBackground(){
-		return background;
+	public void showColor(int prov, ArrayList<Integer> provList){
+		provList.add(prov);
+		toGreyBackProv=provList;
+		for(int i=0; i<provList.size(); i++){
+			int id = provList.get(i);
+			if(game.isProvinceEmpty(id)){
+				provinceImage[id].setIcon(provinceorange[id]);
+			}
+			else{
+				String faction = game.getProvinceFaction(id);
+				if(faction == "mordor"){
+					provinceImage[id].setIcon(provincemilitary[id]);
+				}
+				else if(faction == "gondor"){
+					provinceImage[id].setIcon(provincemint[id]);
+				}
+				else if(faction == "rohan"){
+					provinceImage[id].setIcon(provinceblue[id]);
+				}
+				else if(faction == "elves"){
+					provinceImage[id].setIcon(provincegreen[id]);
+				}
+				else if(faction == "dwarves"){
+					provinceImage[id].setIcon(provinceyellow[id]);
+				}
+				else if(faction == "harad"){
+					provinceImage[id].setIcon(provincepink[id]);
+				}
+				else if(faction == "isengard"){
+					provinceImage[id].setIcon(provincebrown[id]);
+				}
+			}
+		}
 	}
 	
-	public JButton[] getActionButtons(){
-		return provinceActionButton;
+	public void makeGrey(ArrayList<Integer> provList){
+		for(int i=0; i<provList.size(); i++){
+			int id= provList.get(i);
+			provinceImage[id].setIcon(provincegrey[id]);
+		}
 	}
 	
-	public JLabel getNameLabel(){
-		return nameLabel;
+	public void setVisibleRedBoxes(ArrayList<Integer> provList){
+		for(int i=0; i<provList.size(); i++){
+			provinceActionButton[provList.get(i)].setVisible(true);
+		}
 	}
 	
-	public void repaintThis(){
-		repaint();
+	public void setNotVisibleRedBoxes(ArrayList<Integer> provList){
+		for(int i=0; i<provList.size(); i++){
+			provinceActionButton[provList.get(i)].setVisible(false);
+		}
+	}
+	
+	public int getSelectedRedBoxId(){
+		return attackTo;
+	}
+	
+	public void setAttackMapStarter(){
+		attackTo = -1;
+		makeGrey(toGreyBackProv);
+		toGreyBackProv.remove(toGreyBackProv.size()-1);
+		setNotVisibleRedBoxes(toGreyBackProv);
 	}
 	
 	public void setName(){
 		nameLabel.setText(game.getName());			//set the name
 	}
 	
-	public void changeColors(ArrayList<Integer> provinceList){
-		for(int i=0; i<provinceList.size(); i++){
-			String faction = game.getProvinceFaction(provinceList.get(i));
+	public void setAttackFrom(int i){
+		attackFrom=i;
+	}
+	
+	public void changeColors(ArrayList<Integer> provList){
+		for(int i=0; i<provList.size(); i++){
+			String faction = game.getProvinceFaction(provList.get(i));
 			if(faction=="mordor"){
-				provinceImage[provinceList.get(i)].setIcon(provincemilitary[i]);
+				provinceImage[provList.get(i)].setIcon(provincemilitary[i]);
 			}
 			else if(faction=="gondor"){
-				provinceImage[provinceList.get(i)].setIcon(provincemint[i]);
+				provinceImage[provList.get(i)].setIcon(provincemint[i]);
 			}
 			else if(faction=="rohan"){
-				provinceImage[provinceList.get(i)].setIcon(provinceblue[i]);
+				provinceImage[provList.get(i)].setIcon(provinceblue[i]);
 			}
 			else if(faction=="elves"){
-				provinceImage[provinceList.get(i)].setIcon(provincegreen[i]);
+				provinceImage[provList.get(i)].setIcon(provincegreen[i]);
 			}
 			else if(faction=="dwarves"){
-				provinceImage[provinceList.get(i)].setIcon(provinceyellow[i]);
+				provinceImage[provList.get(i)].setIcon(provinceyellow[i]);
 			}
 			else if(faction=="harad"){
-				provinceImage[provinceList.get(i)].setIcon(provincepink[i]);
+				provinceImage[provList.get(i)].setIcon(provincepink[i]);
 			}
 			else if(faction=="isengard"){
-				provinceImage[provinceList.get(i)].setIcon(provincebrown[i]);
+				provinceImage[provList.get(i)].setIcon(provincebrown[i]);
 			}
 		}
 	}
-	
-	
-	
-
 }
+
+
+	

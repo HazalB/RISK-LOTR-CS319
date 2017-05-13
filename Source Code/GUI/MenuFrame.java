@@ -1,6 +1,8 @@
+package GUI;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
+import Manager.*;
 
 
 public class MenuFrame extends JFrame {
@@ -15,6 +17,8 @@ public class MenuFrame extends JFrame {
 	private AddPlayerPanel addPlayerPanel;
 	private PlayerNumberPanel playerNumberPanel;
 	private int playerNum;
+	private MainGameManager game;
+	//private MainGameManager game;
 
 	/**
 	 * Launch the application.
@@ -49,12 +53,14 @@ public class MenuFrame extends JFrame {
 		cardLayout = new CardLayout();
 		mainPanel.setLayout(cardLayout);
 		
-		gameMainPanel = new GameMainPanel(mainPanel, cardLayout);
+		addPlayerPanel = new AddPlayerPanel(mainPanel, cardLayout);
+		game=addPlayerPanel.returnGame();
+		gameMainPanel = addPlayerPanel.returnGamePanel();
 		menuPanel= new MenuPanel(mainPanel, cardLayout);
 		helpPanel = new HelpPanel(mainPanel, cardLayout);
 		optionsPanel = new OptionsPanel(mainPanel, cardLayout);
-		addPlayerPanel = new AddPlayerPanel(mainPanel, cardLayout);
-		playerNumberPanel = new PlayerNumberPanel(mainPanel, cardLayout, addPlayerPanel);		
+		playerNumberPanel = new PlayerNumberPanel(mainPanel, cardLayout, addPlayerPanel, game);		
+		
 		
 		menuPanel.setPreferredSize(new Dimension(665, 687));
 		helpPanel.setPreferredSize(new Dimension(665, 687));

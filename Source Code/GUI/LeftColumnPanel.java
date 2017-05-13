@@ -1,6 +1,7 @@
+package GUI;
 import java.awt.Color;
 import java.awt.Graphics;
-
+import Manager.*;
 import javax.swing.*;
 
 import java.awt.*;
@@ -13,9 +14,11 @@ public class LeftColumnPanel extends JPanel {
 	 */
 	
 	public Image background;
+	private MainGameManager game;
 	
-	public LeftColumnPanel() {
+	public LeftColumnPanel(MainGameManager mGM) {
 		
+		game = mGM;
 		
 		setVisible(true);
 		setLayout(null);

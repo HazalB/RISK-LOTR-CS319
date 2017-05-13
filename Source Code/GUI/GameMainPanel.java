@@ -1,6 +1,8 @@
+package GUI;
 import java.awt.*;
 import java.awt.event.*;
-
+import java.util.ArrayList;
+import Manager.*;
 import javax.swing.*;
 
 
@@ -11,7 +13,6 @@ public class GameMainPanel extends JPanel {
 	 */
 	private CardLayout menuCardLayout, mapCardLayout;
 	private LeftColumnPanel leftColumn;
-	private MapPanel mapActivePanel;
 	private RightColumnPanel rightColumn;
 	private ImageIcon createSoldButImage;
 	private JButton createSoldBut, attackBut, transferBut, doneBut, endPhase;
@@ -21,23 +22,43 @@ public class GameMainPanel extends JPanel {
 	private SoldierNumberPanel soldierNumberPanel;
 	private TransferSoldierPanel transferSoldierPanel;
 	private AttackSoldierPanel attackSoldierPanel;
+	private MapPanel mapActivePanel;
+	private TransferMapPanel transferMapPanel;
+	private MobilityMapPanel mobilityMapPanel;
+	private CreateSoldierMapPanel createSoldierMapPanel;
+	private AttackMapPanel attackMapPanel;
+	private MainGameManager game;
 	
-	public GameMainPanel(JPanel mP, CardLayout cl) {
+	public GameMainPanel(JPanel mP, CardLayout cl, MainGameManager mGM) {
 		
 		mainMenuPanel = mP;
 		menuCardLayout = cl;
+		game = mGM;
 		
 		showPhaseLabel = new JLabel[3];
-		leftColumn = new LeftColumnPanel();
+		leftColumn = new LeftColumnPanel(game);
 		
 		for(int i=0; i<3; i++){
 			showPhaseLabel[i] = new JLabel();
 			leftColumn.add(showPhaseLabel[i]);
 		}
 		
-		showPhaseLabel[0].setIcon(new ImageIcon("images/developmentoffpic.png"));
-		showPhaseLabel[1].setIcon(new ImageIcon("images/mobilityoffpic.png"));
-		showPhaseLabel[2].setIcon(new ImageIcon("images/executiononpic.png"));
+		if(game.getCurPhase()==1){
+			showPhaseLabel[0].setIcon(new ImageIcon("images/developmentonpic.png"));
+			showPhaseLabel[1].setIcon(new ImageIcon("images/mobilityoffpic.png"));
+			showPhaseLabel[2].setIcon(new ImageIcon("images/executionoffpic.png"));
+		}
+		else if(game.getCurPhase()==2){
+			showPhaseLabel[0].setIcon(new ImageIcon("images/developmentoffpic.png"));
+			showPhaseLabel[1].setIcon(new ImageIcon("images/mobilityonpic.png"));
+			showPhaseLabel[2].setIcon(new ImageIcon("images/executionoffpic.png"));
+		}
+		else if(game.getCurPhase()==3){
+			showPhaseLabel[0].setIcon(new ImageIcon("images/developmentonpic.png"));
+			showPhaseLabel[1].setIcon(new ImageIcon("images/mobilityoffpic.png"));
+			showPhaseLabel[2].setIcon(new ImageIcon("images/executiononpic.png"));
+		}
+		
 		
 		showPhaseLabel[0].setBounds(3, 10, 122, 18);
 		showPhaseLabel[1].setBounds(3, 35, 103, 17);
@@ -48,19 +69,29 @@ public class GameMainPanel extends JPanel {
 		mapCardLayout = new CardLayout();
 		mainMapPanel = new JPanel();
 		
-		mapActivePanel = new MapPanel(mainMapPanel, mapCardLayout);
-		addSoldierPanel = new AddSoldierPanel(mainMapPanel, mapCardLayout);
-		soldierNumberPanel = new SoldierNumberPanel(mainMapPanel, mapCardLayout);
-		transferSoldierPanel = new TransferSoldierPanel(mainMapPanel, mapCardLayout);
-		attackSoldierPanel = new AttackSoldierPanel(mainMapPanel, mapCardLayout);
-		rightColumn = new RightColumnPanel();
+		mapActivePanel = new MapPanel(mainMapPanel, mapCardLayout, game, transferMapPanel, mobilityMapPanel, createSoldierMapPanel);
+		addSoldierPanel = new AddSoldierPanel(mainMapPanel, mapCardLayout, game, soldierNumberPanel);
+		soldierNumberPanel = new SoldierNumberPanel(mainMapPanel, mapCardLayout, game);
+		transferSoldierPanel = new TransferSoldierPanel(mainMapPanel, mapCardLayout, game, mobilityMapPanel);
+		attackSoldierPanel = new AttackSoldierPanel(mainMapPanel, mapCardLayout, game, mobilityMapPanel);
+		transferMapPanel = new TransferMapPanel(mainMapPanel, mapCardLayout, mapActivePanel, game, transferSoldierPanel);
+		mobilityMapPanel = new MobilityMapPanel(mainMapPanel, mapCardLayout, mapActivePanel, game, attackSoldierPanel, transferSoldierPanel);
+		createSoldierMapPanel = new CreateSoldierMapPanel(mainMapPanel, mapCardLayout, mapActivePanel, game, soldierNumberPanel);
+		attackMapPanel = new AttackMapPanel(mainMapPanel, mapCardLayout, game, attackSoldierPanel);
+		
+				
+		rightColumn = new RightColumnPanel(game);
 		mainMapPanel.setLayout(mapCardLayout);
 		
 		mainMapPanel.add("activeMapPanel", mapActivePanel);
+		mainMapPanel.add("transferMapPanel", transferMapPanel);
+		mainMapPanel.add("mobilityMapPanel", mobilityMapPanel);
+		mainMapPanel.add("createSoldierMapPanel", createSoldierMapPanel);
 		mainMapPanel.add("soldierNumberPanel", soldierNumberPanel);
 		mainMapPanel.add("addSoldierPanel", addSoldierPanel);
 		mainMapPanel.add("attackSoldierPanel", attackSoldierPanel);
 		mainMapPanel.add("transferSoldierPanel", transferSoldierPanel);
+		mainMapPanel.add("attackMapPanel", attackMapPanel);
 		
 		createSoldBut = new JButton();
 		createSoldButImage = new ImageIcon("images/createsoldbut.png");
@@ -135,6 +166,12 @@ public class GameMainPanel extends JPanel {
 		setBounds(0, 0, 650, 687);
 		
 		addMouseMotionListener(new ButtonImageListener());
+		GameMainButtonListener butLis = new GameMainButtonListener();
+		createSoldBut.addActionListener(butLis);
+		attackBut.addActionListener(butLis);
+		transferBut.addActionListener(butLis);
+		doneBut.addActionListener(butLis);
+		endPhase.addActionListener(butLis);
 	}
 	
 	private class BackToMenuListener implements KeyListener{
@@ -206,6 +243,108 @@ public class GameMainPanel extends JPanel {
 				endPhase.setIcon(new ImageIcon("images/endphasebut.png"));
 			}
 		}
+	}
+	
+	private class GameMainButtonListener implements ActionListener{
+		public void actionPerformed(ActionEvent event){
+			if(event.getSource()==createSoldBut && game.getCurPhase() == 1
+					&& mapCardLayout.getClass().getName() == "activeMapPanel"){		//game'in phase'ini al
+				ArrayList<Integer> visibleRedBoxIdList = game.getCurPlayerProvinces();					//aktif oyuncunun province idleri arraylist
+				createSoldierMapPanel.setRedBoxesVisible(visibleRedBoxIdList);
+				createSoldierMapPanel.repaintThis();
+				mapCardLayout.show(mainMapPanel, "createSoldierMapPanel");			//redboxlarý sonra not visible yap tekrar create soldier paneli içinde
+			}
+			else if(event.getSource()==attackBut && game.getCurPhase() == 2
+					&& mapCardLayout.getClass().getName() == "activeMapPanel"){	//game'in phaseini al
+				int attackingid = mobilityMapPanel.getSelectedRedBoxId();
+				ArrayList<Integer> visibleRedBoxIdList = game.getNotOwnedProvinceList(attackingid);					//aktif oyuncunun seçtiði id'nin komþusunda bulunan sahip olmadýðý province idleri
+				attackMapPanel.setVisibleRedBoxes(visibleRedBoxIdList);
+				attackMapPanel.showColor(attackingid, visibleRedBoxIdList);
+				attackMapPanel.setAttackFrom(attackingid);
+				attackMapPanel.repaint();
+				mapCardLayout.show(mainMapPanel, "attackMapPanel");			//redboxlarý sonra not visible yap tekrar create soldier paneli içinde
+			}
+			else if(event.getSource()==transferBut && game.getCurPhase()==2
+					&& mapCardLayout.getClass().getName() == "activeMapPanel"){	//game'in phaseini al
+				int transferFromId = mobilityMapPanel.getSelectedRedBoxId();
+				ArrayList<Integer> visibleRedBoxIdList = game.getCurPlayerProvinces();					//aktif oyuncunun province idleri arraylist
+				for(int i=0; i<visibleRedBoxIdList.size(); i++){
+					if(visibleRedBoxIdList.get(i)==transferFromId){
+						visibleRedBoxIdList.remove(i);
+					}
+				}
+				transferMapPanel.setRedBoxesVisible(visibleRedBoxIdList);
+				transferMapPanel.repaintThis();
+				mapCardLayout.show(mainMapPanel, "transferMapPanel");
+			}
+			else if(event.getSource()==doneBut && mapCardLayout.getClass().getName()=="attackMapPanel"
+					&& game.getCurPhase()==2 && attackMapPanel.getSelectedRedBoxId()!=-1){
+				attackMapPanel.setAttackMapStarter();
+				mapCardLayout.show(mainMapPanel, "attackSoldierPanel");
+			}
+			else if(event.getSource()==endPhase){
+				if(game.getCurPhase()==1 && mapCardLayout.getClass().getName()=="activeMapPanel"){
+					game.nextPhase();
+					showPhaseLabel[0].setIcon(new ImageIcon("images/developmentoffpic.png"));
+					if(game.getCurPhase()==2){
+						showPhaseLabel[1].setIcon(new ImageIcon("images/mobilityonpic.png"));
+						mobilityMapPanel.setRedBoxesVisible(game.getCurPlayerProvinces());
+						mapCardLayout.show(mainMapPanel, "mobilityMapPanel");
+					}
+					else if(game.getCurPhase()==3){
+						showPhaseLabel[2].setIcon(new ImageIcon("images/executiononpic.png"));
+						ArrayList<Integer> changedProvinces = game.changes();
+						mapActivePanel.changeColors(changedProvinces);
+						transferMapPanel.changeColors(changedProvinces);
+						mobilityMapPanel.changeColors(changedProvinces);
+						createSoldierMapPanel.changeColors(changedProvinces);
+						attackMapPanel.changeColors(changedProvinces);
+						mapCardLayout.show(mainMapPanel, "activeMapPanel");
+					}
+				}
+				else if(game.getCurPhase()==2 && mapCardLayout.getClass().getName()=="mobilityMapPanel"){
+					game.nextPhase();
+					showPhaseLabel[1].setIcon(new ImageIcon("images/mobilityoffpic.png"));
+					if(game.getCurPhase()==1){
+						showPhaseLabel[0].setIcon(new ImageIcon("images/developmentonpic.png"));
+						mapCardLayout.show(mainMapPanel, "activeMapPanel");
+					}
+					else if(game.getCurPhase()==3){
+						showPhaseLabel[2].setIcon(new ImageIcon("images/executiononpic.png"));
+						ArrayList<Integer> changedProvinces = game.changes();
+						mapActivePanel.changeColors(changedProvinces);
+						transferMapPanel.changeColors(changedProvinces);
+						mobilityMapPanel.changeColors(changedProvinces);
+						createSoldierMapPanel.changeColors(changedProvinces);
+						attackMapPanel.changeColors(changedProvinces);
+						mapCardLayout.show(mainMapPanel, "activeMapPanel");
+					}
+				}
+				else if(game.getCurPhase()==3 && mapCardLayout.getClass().getName()=="activeMapPanel"){
+					game.nextPhase();
+					showPhaseLabel[3].setIcon(new ImageIcon("images/executionoffpic.png"));
+					if(game.getCurPhase()==1){
+						showPhaseLabel[0].setIcon(new ImageIcon("images/developmentonpic.png"));
+						mapCardLayout.show(mainMapPanel, "activeMapPanel");
+					}
+					else if(game.getCurPhase()==2){
+						showPhaseLabel[1].setIcon(new ImageIcon("images/mobilityonpic.png"));
+						mobilityMapPanel.setRedBoxesVisible(game.getCurPlayerProvinces());
+						mapCardLayout.show(mainMapPanel, "mobilityMapPanel");
+					}
+				}		
+			}
+			
+		}
+	}
+	
+	public void repaintMaps(){
+		attackMapPanel.repaint();
+		mapActivePanel.repaint();
+		createSoldierMapPanel.repaint();
+		transferMapPanel.repaint();
+		mobilityMapPanel.repaint();
+		
 	}
 
 }

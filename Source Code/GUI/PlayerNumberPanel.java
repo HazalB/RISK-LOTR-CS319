@@ -1,8 +1,9 @@
+package GUI;
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-
+import Manager.*;
 
 public class PlayerNumberPanel extends JPanel {
 
@@ -16,12 +17,14 @@ public class PlayerNumberPanel extends JPanel {
 	private JTextField playerNumField;
 	private int playerNum;
 	private AddPlayerPanel addPlayerPanel;
+	private MainGameManager game;
 	
-	public PlayerNumberPanel(JPanel mP, CardLayout cl, AddPlayerPanel aP) {
+	public PlayerNumberPanel(JPanel mP, CardLayout cl, AddPlayerPanel aP, MainGameManager mGM) {
 		
 		addPlayerPanel=aP;
 		mainPanel = mP;
 		cardLayout = cl;
+		game = mGM;
 		
 		nextBut = new JButton();
 		nextBut.setIcon(new ImageIcon("images/next.png"));

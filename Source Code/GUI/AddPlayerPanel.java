@@ -1,8 +1,9 @@
+package GUI;
 import javax.swing.*;
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
-
+import Manager.*;
 
 public class AddPlayerPanel extends JPanel {
 
@@ -15,16 +16,18 @@ public class AddPlayerPanel extends JPanel {
 	private Image background;
 	private JTextField askName;
 	private String name;
-	private JRadioButton rohan, gondor, elves, dwarfs, mordor, harad, isengard;
+	private JRadioButton rohan, gondor, elves, dwarves, mordor, harad, isengard;
 	private int totalPlayerNum, currentFaction;
 	private ButtonGroup bG;
 	private ArrayList<String> nameList, factionList;
-	
+	private MainGameManager game;
+	private GameMainPanel gameMainPanel;
 	
 	public AddPlayerPanel(JPanel mP, CardLayout cl) {
 		
 		currentFaction=0;
 		bG=new ButtonGroup();
+		
 		
 		nameList = new ArrayList<String>();
 		factionList = new ArrayList<String>();		
@@ -42,7 +45,7 @@ public class AddPlayerPanel extends JPanel {
 		rohan = new JRadioButton("Rohan");
 		gondor = new JRadioButton("Gondor");
 		elves = new JRadioButton("Elves");
-		dwarfs = new JRadioButton("Dwarfs");
+		dwarves = new JRadioButton("Dwarves");
 		mordor = new JRadioButton("Mordor");
 		harad = new JRadioButton("Harad");
 		isengard = new JRadioButton("Isengard");
@@ -50,7 +53,7 @@ public class AddPlayerPanel extends JPanel {
 		add(rohan);
 		add(gondor);
 		add(elves);
-		add(dwarfs);
+		add(dwarves);
 		add(mordor);
 		add(harad);
 		add(isengard);
@@ -58,7 +61,7 @@ public class AddPlayerPanel extends JPanel {
 		bG.add(rohan);
 		bG.add(gondor);
 		bG.add(elves);
-		bG.add(dwarfs);
+		bG.add(dwarves);
 		bG.add(mordor);
 		bG.add(harad);
 		bG.add(isengard);
@@ -84,12 +87,12 @@ public class AddPlayerPanel extends JPanel {
 		elves.setBorderPainted(false);	
 		elves.setFocusable(false);
 		
-		dwarfs.setBounds(330, 275, 67, 20);
-		dwarfs.setFocusPainted(false); 
-		dwarfs.setOpaque(false);
-		dwarfs.setContentAreaFilled(false);
-		dwarfs.setBorderPainted(false);	
-		dwarfs.setFocusable(false);
+		dwarves.setBounds(330, 275, 67, 20);
+		dwarves.setFocusPainted(false); 
+		dwarves.setOpaque(false);
+		dwarves.setContentAreaFilled(false);
+		dwarves.setBorderPainted(false);	
+		dwarves.setFocusable(false);
 		
 		mordor.setBounds(218, 295, 67, 20);
 		mordor.setFocusPainted(false); 
@@ -116,7 +119,7 @@ public class AddPlayerPanel extends JPanel {
 		mordor.addActionListener(new FactionListener());
 		harad.addActionListener(new FactionListener());
 		isengard.addActionListener(new FactionListener());
-		dwarfs.addActionListener(new FactionListener());
+		dwarves.addActionListener(new FactionListener());
 		elves.addActionListener(new FactionListener());
 		gondor.addActionListener(new FactionListener());
 		
@@ -177,9 +180,9 @@ public class AddPlayerPanel extends JPanel {
 						elves.setEnabled(false);
 					}
 					else if(currentFaction==4){
-						factionList.add("dwarfs");
-						dwarfs.setSelected(false);
-						dwarfs.setEnabled(false);
+						factionList.add("dwarves");
+						dwarves.setSelected(false);
+						dwarves.setEnabled(false);
 					}
 					else if(currentFaction==5){
 						factionList.add("mordor");
@@ -201,6 +204,13 @@ public class AddPlayerPanel extends JPanel {
 						totalPlayerNum--;
 					}
 					else if(totalPlayerNum==1){
+						//faction ve nameleri game manager'a gir
+						game= new MainGameManager();
+						gameMainPanel = new GameMainPanel(mainPanel, cardLayout, game);
+						game.enterNames(nameList);
+						game.enterFactions(factionList);
+						game.initializeGame();
+						gameMainPanel.repaintMaps();
 						cardLayout.show(mainPanel, "gameMainPanel");
 					}
 				}
@@ -226,8 +236,12 @@ public class AddPlayerPanel extends JPanel {
 		}
 	}
 	
-	public String getName(){
-		return name;
+	public ArrayList<String> getNameList(){
+		return nameList;
+	}
+	
+	public ArrayList<String> getFactionList(){
+		return factionList;
 	}
 	
 	private class FactionListener implements ActionListener{
@@ -241,7 +255,7 @@ public class AddPlayerPanel extends JPanel {
 			else if(event.getSource() == elves){
 				currentFaction=3;
 			}
-			else if(event.getSource() == dwarfs){
+			else if(event.getSource() == dwarves){
 				currentFaction=4;
 			}
 			else if(event.getSource() == mordor){
@@ -254,6 +268,14 @@ public class AddPlayerPanel extends JPanel {
 				currentFaction=7;
 			}
 		}
+	}
+	
+	public MainGameManager returnGame(){
+		return game;
+	}
+	
+	public GameMainPanel returnGamePanel(){
+		return gameMainPanel;
 	}
 	
 
