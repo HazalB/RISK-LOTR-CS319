@@ -17,12 +17,24 @@ public class MainGameManager extends Manager
 	private SoundManager soundManager;
 	private int numPlayers;
 	private ArrayList<Player> players;
+	private ArrayList<String> player_names;
+	private ArrayList<String> player_factions;
+	private ArrayList<Integer> execChanges;
+
+
 	public MainGameManager() {
-	        super(null);
-	        numPlayers = 0;
-	        players = new ArrayList<Player>();
-	    }
-	Game game = new Game ();
+		super(null);
+		numPlayers = 0;
+		players = new ArrayList<Player>();
+		execChanges = new ArrayList<Integer>();
+		Game game = new Game ();
+		persistentDataManager = new PermanentDataManager(game);
+		deploymentPhaseManager = new DeploymentPhaseManager(game);
+		mobilityPhaseManager = new MobilityPhaseManager(game);
+		executionPhaseManager = new ExecutionPhaseManager(game);
+		soundManager = new SoundManager(game);
+	}
+
 	
 	public void executePhases(){
 		//first phase
@@ -41,7 +53,7 @@ public class MainGameManager extends Manager
 		if (game.getCurPhase() == 3)//execution phase will be executed
 		{
 			//executes all the orders
-			executionPhaseManager.executeOrderList();
+			executionPhaseManager.executeOrderList(execChanges);
 		}
 	}
 
@@ -110,6 +122,11 @@ public class MainGameManager extends Manager
 	{//starts a new game
 		//sets all game instances to what the player specifies
 		//we get the input from gui
+
+		numPlayers = player_names.size();
+		for(int i = 0; i < player_names.size(); i++){
+			players.add(new Player(player_names.get(i),player_factions.get(i)));
+		}
 		game.setNumPlayers(numPlayers);//gets parameter from gui
 		game.setPlayers(players); //from gui
 		game.setCurPhase(1);
@@ -275,6 +292,61 @@ public class MainGameManager extends Manager
 			}
 		}
 		return indices;
+	}
+
+	public int getPhase(){
+		return game.getCurPhase();
+	}
+
+	public void nextPhase(){
+		game.setCurPhase(game.getCurPhase() + 1);
+	}
+
+	public void enterNames(ArrayList<String> names){
+		player_names = names;
+	}
+	public void enterFactions(ArrayList<String> factions){
+		player_factions = factions;
+	}
+
+	public ArrayList<Integer> getEmptyProvinces(){
+		ArrayList<Integer> indices = new ArrayList<Integer>();
+		for(int i = 0; i < game.getProvinceList().size(); i++){
+			if(game.getProvinceList().get(i).getOwner() == null){
+				indices.add(convertMtoH(i));
+			}
+		}
+		return indices;
+	}
+
+	public ArrayList<Integer> getNotOwnedProvinceList(int id_h){
+		int id = convertHtoM(id_h);
+		Province curProv = game.getProvinceList().get(id);
+		ArrayList<Integer> indices = new ArrayList<Integer>();
+		for(int i = 0; i < curProv.getNeighboringProvinceList().size(); i++){
+			if(curProv.getNeighboringProvinceList().get(i) != curProv.getOwner().getId()){
+				indices.add(convertMtoH(curProv.getNeighboringProvinceList().get(i)));
+			}
+		}
+
+		return indices;
+	}
+
+	public String getName(){
+		return game.getPlayers().get(game.getCurPlayerId()).getUsername();
+	}
+
+	public String getProvinceFaction(int id_h){
+		int id = convertHtoM(id_h);
+
+		return game.getProvinceList().get(id).getOwner().getFaction().getFactionType();
+	}
+
+	public ArrayList<Integer> changes(){
+		for(int i = 0; i < execChanges.size(); i++){
+			execChanges.set(i, convertMtoH(execChanges.get(i)));
+		}
+		return execChanges;
 	}
 }
 

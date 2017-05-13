@@ -5,6 +5,7 @@ package Manager;
  */
 import GameMemory.*;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class ExecutionPhaseManager extends Manager{
@@ -14,7 +15,7 @@ public class ExecutionPhaseManager extends Manager{
 	public ExecutionPhaseManager(Game game){
 		super(game);
 	}
-	public boolean carryOrder (Order order){
+	public boolean carryOrder (Order order, ArrayList<Integer> execChanges){
 		// If the order is valid
 		if(order.getPlayer() == order.getProvinceFrom().getOwner()){
 			//check what kind of order it is transfer or attack order
@@ -37,6 +38,7 @@ public class ExecutionPhaseManager extends Manager{
 					//the attacker gets the province of the defender
 					//set the owner of the provinceTo to the owner of province from
 					order.getProvinceTo().setOwner(order.getProvinceFrom().getOwner());
+					execChanges.add(order.getProvinceTo().getId());
 				}
 			}
 
@@ -47,14 +49,14 @@ public class ExecutionPhaseManager extends Manager{
 		}
 	}
 
-	public void executeOrderList()
+	public void executeOrderList(ArrayList<Integer> execChanges)
 	{
 		Random rand = new Random();
 		//execute all orders, BUT IN RANDOM ORDER
 		while(game.getOrderList().getOrders().size() != 0){
 			int index;
 			index = rand.nextInt(game.getOrderList().getOrders().size());
-			carryOrder(getOrderList().getOrders().get(index));
+			carryOrder(getOrderList().getOrders().get(index), execChanges);
 		}
 
 	}
